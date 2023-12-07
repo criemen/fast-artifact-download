@@ -2,8 +2,10 @@ import * as os from 'os'
 import * as path from 'path'
 import * as core from '@actions/core'
 import artifactClient from '@actions/artifact'
-import type {Artifact, FindOptions} from '@actions/artifact'
+import type {Artifact} from '@actions/artifact'
 import {Inputs, Outputs} from './constants'
+import {fastDownloadArtifact} from './fast-download'
+import {getRipunzip} from './install-ripunzip'
 
 const PARALLEL_DOWNLOADS = 5
 
@@ -35,7 +37,6 @@ async function run(): Promise<void> {
   const resolvedPath = path.resolve(inputs.path)
   core.debug(`Resolved path is ${resolvedPath}`)
 
-  const options: FindOptions = {}
   const [repositoryOwner, repositoryName] = inputs.repository.split('/')
   if (!repositoryOwner || !repositoryName) {
     throw new Error(
@@ -43,11 +44,13 @@ async function run(): Promise<void> {
     )
   }
 
-  options.findBy = {
-    token: inputs.token,
-    workflowRunId: inputs.runID,
-    repositoryName,
-    repositoryOwner
+  const options = {
+    findBy: {
+      token: inputs.token,
+      workflowRunId: inputs.runID,
+      repositoryName,
+      repositoryOwner
+    }
   }
 
   let artifacts: Artifact[] = []
@@ -89,8 +92,9 @@ async function run(): Promise<void> {
     artifacts = listArtifactResponse.artifacts
   }
 
+  const ripunzip = await getRipunzip()
   const downloadPromises = artifacts.map(artifact =>
-    artifactClient.downloadArtifact(artifact.id, {
+    fastDownloadArtifact(ripunzip, artifact.id, {
       ...options,
       path: isSingleArtifactDownload
         ? resolvedPath

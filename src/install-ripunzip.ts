@@ -27,11 +27,16 @@ export async function downloadAndCacheRipunzip(): Promise<string> {
 }
 
 export async function getRipunzip(): Promise<string> {
+  core.startGroup('Acquiring ripunzip')
   const cachedPath = tc.find('ripunzip', '1.1.0')
-  if (cachedPath) {
-    core.info(`Found in cache @ ${cachedPath}`)
-    return cachedPath
-  } else {
-    return downloadAndCacheRipunzip()
+  try {
+    if (cachedPath) {
+      core.info(`Found in cache @ ${cachedPath}`)
+      return cachedPath
+    } else {
+      return downloadAndCacheRipunzip()
+    }
+  } finally {
+    core.endGroup()
   }
 }

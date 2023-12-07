@@ -1,19 +1,16 @@
+import fs from 'fs/promises'
 import {DownloadArtifactOptions} from '@actions/artifact'
 import type {FindOptions} from '@actions/artifact'
-import fs from 'fs/promises'
-
 import * as github from '@actions/github'
-import * as io from '@actions/io'
 import * as exec from '@actions/exec'
 import * as core from '@actions/core'
 
-async function streamExtract(url: string, directory: string): Promise<void> {
-  const ripunzip = await io.which('ripunzip', true)
-  if (ripunzip) {
-    return exec
-      .exec(ripunzip, ['unzip-uri', '-d', directory, url])
-      .then(() => {})
-  }
+async function streamExtract(
+  ripunzip: string,
+  url: string,
+  directory: string
+): Promise<void> {
+  return exec.exec(ripunzip, ['unzip-uri', '-d', directory, url]).then(() => {})
 }
 
 async function exists(path: string): Promise<boolean> {
@@ -50,6 +47,7 @@ const scrubQueryParameters = (url: string): string => {
 }
 
 export async function downloadArtifactPublic(
+  ripunzip: string,
   artifactId: number,
   repositoryOwner: string,
   repositoryName: string,
@@ -92,7 +90,7 @@ export async function downloadArtifactPublic(
 
   try {
     core.info(`Starting download of artifact to: ${downloadPath}`)
-    await streamExtract(location, downloadPath)
+    await streamExtract(ripunzip, location, downloadPath)
     core.info(`Artifact download completed successfully.`)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -103,6 +101,7 @@ export async function downloadArtifactPublic(
 }
 
 export async function fastDownloadArtifact(
+  ripunzip: string,
   artifactId: number,
   options: DownloadArtifactOptions & Required<FindOptions>
 ): Promise<void> {
@@ -113,6 +112,7 @@ export async function fastDownloadArtifact(
     } = options
 
     return downloadArtifactPublic(
+      ripunzip,
       artifactId,
       repositoryOwner,
       repositoryName,
