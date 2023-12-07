@@ -11,6 +11,9 @@ async function streamExtract(
   url: string,
   directory: string
 ): Promise<void> {
+  if (!exists(ripunzip)) {
+    throw new Error(`ripunzip does not exist: ${ripunzip}`)
+  }
   return exec.exec(ripunzip, ['unzip-uri', '-d', directory, url]).then(() => {})
 }
 
