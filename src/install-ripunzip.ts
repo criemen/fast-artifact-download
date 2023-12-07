@@ -4,9 +4,9 @@ import * as core from '@actions/core'
 function getDownloadUrl(): string {
   switch (process.platform) {
     case 'win32':
-      throw new Error('Windows is not supported')
+      return 'https://github.com/criemen/fast-artifact-download/releases/download/ripunzip/ripunzip-win-amd64.exe'
     case 'darwin':
-      throw new Error('MacOS is not supported')
+      return 'https://github.com/criemen/fast-artifact-download/releases/download/ripunzip/ripunzip-macos'
     case 'linux':
       return 'https://github.com/criemen/fast-artifact-download/releases/download/ripunzip/ripunzip-linux-amd64'
     default:
