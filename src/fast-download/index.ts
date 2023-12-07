@@ -64,15 +64,19 @@ export async function downloadArtifactPublic(
   core.info(
     `Downloading artifact '${artifactId}' from '${repositoryOwner}/${repositoryName}'`
   )
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function fetchWithManualRedirect(url: any, options: any) {
+    return fetch(url, {...options, redirect: 'manual'})
+  }
   const {headers, status} = await api.rest.actions.downloadArtifact({
     owner: repositoryOwner,
     repo: repositoryName,
     artifact_id: artifactId,
     archive_format: 'zip',
-    request: {
-      redirect: 'manual'
-    }
+    fetch: fetchWithManualRedirect
+    // request: {
+    //   redirect: 'manual'
+    // }
   })
   // const {headers, status} = await api.request(
   //   'GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/{archive_format}',
