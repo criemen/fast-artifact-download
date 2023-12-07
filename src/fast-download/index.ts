@@ -65,7 +65,7 @@ export async function downloadArtifactPublic(
     `Downloading artifact '${artifactId}' from '${repositoryOwner}/${repositoryName}'`
   )
 
-  const {headers} = await api.request(
+  const {headers, status} = await api.request(
     'HEAD /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/{archive_format}',
     {
       owner: repositoryOwner,
@@ -74,6 +74,15 @@ export async function downloadArtifactPublic(
       archive_format: 'zip'
     }
   )
+  core.info(
+    `Artifact HEAD request returned status: ${status}, headers: ${JSON.stringify(
+      headers
+    )}`
+  )
+
+  if (status !== 302) {
+    throw new Error(`Unable to download artifact. Unexpected status: ${status}`)
+  }
 
   const {location} = headers
   if (!location) {
