@@ -1,6 +1,7 @@
 import * as tc from '@actions/tool-cache'
 import * as core from '@actions/core'
-import { join } from 'path'
+import {join} from 'path'
+import * as fs from 'fs'
 
 function getDownloadUrl(): string {
   switch (process.platform) {
@@ -38,7 +39,9 @@ export async function getRipunzip(): Promise<string> {
     } else {
       cachedPath = await downloadAndCacheRipunzip()
     }
-    return join(cachedPath, 'ripunzip')
+    const ripunzip = join(cachedPath, 'ripunzip')
+    fs.chmodSync(ripunzip, '755')
+    return ripunzip
   } finally {
     core.endGroup()
   }
