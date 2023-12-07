@@ -4,6 +4,7 @@ import type {FindOptions} from '@actions/artifact'
 import * as github from '@actions/github'
 import * as exec from '@actions/exec'
 import * as core from '@actions/core'
+import {requestLog} from '@octokit/plugin-request-log'
 
 async function streamExtract(
   ripunzip: string,
@@ -59,7 +60,7 @@ export async function downloadArtifactPublic(
   }
   const downloadPath = await resolveOrCreateDirectory(options.path)
 
-  const api = github.getOctokit(token)
+  const api = github.getOctokit(token, undefined, requestLog)
 
   core.info(
     `Downloading artifact '${artifactId}' from '${repositoryOwner}/${repositoryName}'`
