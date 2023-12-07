@@ -74,28 +74,10 @@ export async function downloadArtifactPublic(
     repo: repositoryName,
     artifact_id: artifactId,
     archive_format: 'zip',
-    fetch: fetchWithManualRedirect
-    // request: {
-    //   redirect: 'manual'
-    // }
+    request: {
+      fetch: fetchWithManualRedirect
+    }
   })
-  // const {headers, status} = await api.request(
-  //   'GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/{archive_format}',
-  //   {
-  //     owner: repositoryOwner,
-  //     repo: repositoryName,
-  //     artifact_id: artifactId,
-  //     archive_format: 'zip',
-  //     headers: {
-  //       'X-GitHub-Api-Version': '2022-11-28'
-  //     }
-  //   }
-  // )
-  core.info(
-    `Artifact HEAD request returned status: ${status}, headers: ${JSON.stringify(
-      headers
-    )}`
-  )
 
   if (status !== 302) {
     throw new Error(`Unable to download artifact. Unexpected status: ${status}`)
