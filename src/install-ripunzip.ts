@@ -1,5 +1,6 @@
 import * as tc from '@actions/tool-cache'
 import * as core from '@actions/core'
+import { join } from 'path'
 
 function getDownloadUrl(): string {
   switch (process.platform) {
@@ -30,14 +31,14 @@ export async function downloadAndCacheRipunzip(): Promise<string> {
 
 export async function getRipunzip(): Promise<string> {
   core.startGroup('Acquiring ripunzip')
-  const cachedPath = tc.find('ripunzip', '1.1.0')
+  let cachedPath = tc.find('ripunzip', '1.1.0')
   try {
     if (cachedPath) {
       core.info(`Found in cache @ ${cachedPath}`)
-      return cachedPath
     } else {
-      return downloadAndCacheRipunzip()
+      cachedPath = await downloadAndCacheRipunzip()
     }
+    return join(cachedPath, 'ripunzip')
   } finally {
     core.endGroup()
   }
