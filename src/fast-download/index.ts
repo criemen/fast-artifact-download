@@ -73,8 +73,7 @@ export async function downloadArtifactPublic(
     archive_format: 'zip',
     fetch: fetch,
     request: {
-      redirect: 'error',
-      parseSuccessResponseBody: false
+      redirect: 'manual'
     }
   })
   // const {headers, status} = await api.request(
