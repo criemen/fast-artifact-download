@@ -99,8 +99,8 @@ async function run(): Promise<void> {
   )
 
   const chunkedPromises = chunk(downloadPromises, PARALLEL_DOWNLOADS)
-  for (const chunk of chunkedPromises) {
-    await Promise.all(chunk)
+  for (const c of chunkedPromises) {
+    await Promise.all(c)
   }
 
   core.info(`Total of ${artifacts.length} artifact(s) downloaded`)

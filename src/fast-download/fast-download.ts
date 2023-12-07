@@ -20,6 +20,7 @@ async function exists(path: string): Promise<boolean> {
   try {
     await fs.access(path)
     return true
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (error.code === 'ENOENT') {
       return false
@@ -58,7 +59,7 @@ export async function downloadArtifactPublic(
   if (!options?.path) {
     throw new Error(`Path is required`)
   }
-  const downloadPath = await resolveOrCreateDirectory(options!.path)
+  const downloadPath = await resolveOrCreateDirectory(options.path)
 
   const api = github.getOctokit(token)
 
@@ -93,6 +94,7 @@ export async function downloadArtifactPublic(
     core.info(`Starting download of artifact to: ${downloadPath}`)
     await streamExtract(location, downloadPath)
     core.info(`Artifact download completed successfully.`)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new Error(`Unable to download and extract artifact: ${error.message}`)
   }
