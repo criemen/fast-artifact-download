@@ -65,19 +65,15 @@ export async function downloadArtifactPublic(
     `Downloading artifact '${artifactId}' from '${repositoryOwner}/${repositoryName}'`
   )
 
-  const {headers, status} = await api.rest.actions.downloadArtifact({
-    owner: repositoryOwner,
-    repo: repositoryName,
-    artifact_id: artifactId,
-    archive_format: 'zip',
-    request: {
-      redirect: 'manual'
+  const {headers} = await api.request(
+    'HEAD /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/{archive_format}',
+    {
+      owner: repositoryOwner,
+      repo: repositoryName,
+      artifact_id: artifactId,
+      archive_format: 'zip'
     }
-  })
-
-  if (status !== 302) {
-    throw new Error(`Unable to download artifact. Unexpected status: ${status}`)
-  }
+  )
 
   const {location} = headers
   if (!location) {

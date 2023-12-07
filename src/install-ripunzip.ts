@@ -16,6 +16,7 @@ function getDownloadUrl(): string {
 
 export async function downloadAndCacheRipunzip(): Promise<string> {
   const url = getDownloadUrl()
+  core.info(`Downloading ripunzip from ${url}`)
   const downloadPath = await tc.downloadTool(url)
   const cachedPath = await tc.cacheFile(
     downloadPath,
@@ -23,6 +24,7 @@ export async function downloadAndCacheRipunzip(): Promise<string> {
     'ripunzip',
     '1.1.0'
   )
+  core.info(`Cached ripunzip @ ${cachedPath}`)
   return cachedPath
 }
 
