@@ -65,15 +65,28 @@ export async function downloadArtifactPublic(
     `Downloading artifact '${artifactId}' from '${repositoryOwner}/${repositoryName}'`
   )
 
-  const {headers, status} = await api.request(
-    'HEAD /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/{archive_format}',
-    {
-      owner: repositoryOwner,
-      repo: repositoryName,
-      artifact_id: artifactId,
-      archive_format: 'zip'
+  const {headers, status} = await api.rest.actions.downloadArtifact({
+    owner: repositoryOwner,
+    repo: repositoryName,
+    artifact_id: artifactId,
+    archive_format: 'zip',
+    request: {
+      redirect: 'error',
+      method: 'HEAD'
     }
-  )
+  })
+  // const {headers, status} = await api.request(
+  //   'GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/{archive_format}',
+  //   {
+  //     owner: repositoryOwner,
+  //     repo: repositoryName,
+  //     artifact_id: artifactId,
+  //     archive_format: 'zip',
+  //     headers: {
+  //       'X-GitHub-Api-Version': '2022-11-28'
+  //     }
+  //   }
+  // )
   core.info(
     `Artifact HEAD request returned status: ${status}, headers: ${JSON.stringify(
       headers
