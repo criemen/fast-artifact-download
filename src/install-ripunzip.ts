@@ -8,7 +8,7 @@ function getDownloadUrl(): string {
     case 'darwin':
       throw new Error('MacOS is not supported')
     case 'linux':
-      return '...'
+      return 'https://github.com/criemen/fast-artifact-download/releases/download/ripunzip/ripunzip-linux-amd64'
     default:
       throw new Error('Unsupported platform')
   }
