@@ -1,35 +1,17 @@
-# Create a GitHub Action Using TypeScript
+## Faster Artifact Downloading
 
-[![GitHub Super-Linter](https://github.com/actions/typescript-action/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
-![CI](https://github.com/actions/typescript-action/actions/workflows/ci.yml/badge.svg)
-[![Check dist/](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml/badge.svg)](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml)
-[![CodeQL](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml)
-[![Coverage](./badges/coverage.svg)](./badges/coverage.svg)
+This action is a clone of [`actions/download-artifact@v4`](https://github.com/actions/download-artifact),
+but replacing the node-based download+unzip with [`google/ripunzip`](https://github.com/google/ripunzip).
+Calling out to an external tool provides significant speedsups when dealing with large artifacts.
+It might be slower than `actions/download-artifact@v4` on smaller artifacts, though, as the action has to donwload
+the `ripunzip` binary first.
 
-Use this template to bootstrap the creation of a TypeScript action. :rocket:
+Unlike `actions/download-artifact@v4`, requires that the supplied token (or `GITHUB_TOKEN`) has the `actions:read`
+permissions, even when downloading artifacts from the same workflow.
+Another difference is that proxy support is delegated to `google/ripunzip` and therefore might or might not work.
 
-This template includes compilation support, tests, a validation workflow,
-publishing, and versioning guidance.
+## Benchmarks
 
-If you are new, there's also a simpler introduction in the
-[Hello world JavaScript action repository](https://github.com/actions/hello-world-javascript-action).
-
-## Create Your Own Action
-
-To create your own action, you can use this repository as a template! Just
-follow the below instructions:
-
-1. Click the **Use this template** button at the top of the repository
-1. Select **Create a new repository**
-1. Select an owner and name for your new repository
-1. Click **Create repository**
-1. Clone your new repository
-
-> [!IMPORTANT]
->
-> Make sure to remove or update the [`CODEOWNERS`](./CODEOWNERS) file! For
-> details on how to use this file, see
-> [About code owners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
 
 ## Initial Setup
 
