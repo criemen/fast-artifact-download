@@ -4,7 +4,6 @@ import type {FindOptions} from '@actions/artifact'
 import * as github from '@actions/github'
 import * as exec from '@actions/exec'
 import * as core from '@actions/core'
-import fetch from 'node-fetch'
 
 async function streamExtract(
   ripunzip: string,
@@ -71,7 +70,6 @@ export async function downloadArtifactPublic(
     repo: repositoryName,
     artifact_id: artifactId,
     archive_format: 'zip',
-    fetch: fetch,
     request: {
       redirect: 'manual'
     }
