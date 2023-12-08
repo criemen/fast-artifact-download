@@ -15,7 +15,9 @@ async function streamExtract(
     throw new Error(`ripunzip does not exist: ${ripunzip}`)
   }
   return exec
-    .exec(`"${ripunzip}"`, ['unzip-uri', '-d', directory, url])
+    .exec(`"${ripunzip}"`, ['unzip-uri', '-d', directory, url], {
+      silent: true
+    })
     .then(() => {})
 }
 
