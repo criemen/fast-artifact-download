@@ -16,16 +16,27 @@ async function streamExtract(
     throw new Error(`ripunzip does not exist: ${ripunzip}`)
   }
   core.info(`Downloading using aria2c: ${url}`)
-  const aria2c = await io.which('aria2c')
+  // const aria2c = await io.which('aria2c')
+  const azcopy = await io.which('azcopy')
   const startTime = new Date().getTime()
-  await exec.exec(aria2c, [
-    '-x16',
-    '-k8M',
-    '-o',
+  await exec.exec(azcopy, [
+    'cp',
+    url,
     't.zip',
-    '--file-allocation=none',
-    url
+    '--blob-type',
+    'BlockBlob',
+    '--check-md5',
+    'NoCheck',
+    '--skip-version-check'
   ])
+  // await exec.exec(aria2c, [
+  //   '-x16',
+  //   '-k8M',
+  //   '-o',
+  //   't.zip',
+  //   '--file-allocation=none',
+  //   url
+  // ])
   core.info(`aria2c download completed in ${new Date().getTime() - startTime}`)
   const unzipStartTime = new Date().getTime()
   core.debug(`Using ripunzip to extract artifact: ${ripunzip}`)
