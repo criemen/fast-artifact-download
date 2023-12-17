@@ -31,18 +31,19 @@ export async function downloadAndCacheRipunzip(): Promise<string> {
 }
 
 export async function getRipunzip(): Promise<string> {
-  core.startGroup('Acquiring ripunzip')
-  let cachedPath = tc.find('ripunzip.exe', '1.1.0')
-  try {
-    if (cachedPath) {
-      core.info(`Found in cache @ ${cachedPath}`)
-    } else {
-      cachedPath = await downloadAndCacheRipunzip()
-    }
-    const ripunzip = join(cachedPath, 'ripunzip.exe')
-    fs.chmodSync(ripunzip, '755')
-    return ripunzip
-  } finally {
-    core.endGroup()
-  }
+  // core.startGroup('Acquiring ripunzip')
+  return ''
+  // let cachedPath = tc.find('ripunzip.exe', '1.1.0')
+  // try {
+  //   if (cachedPath) {
+  //     core.info(`Found in cache @ ${cachedPath}`)
+  //   } else {
+  //     cachedPath = await downloadAndCacheRipunzip()
+  //   }
+  //   const ripunzip = join(cachedPath, 'ripunzip.exe')
+  //   fs.chmodSync(ripunzip, '755')
+  //   return ripunzip
+  // } finally {
+  //   core.endGroup()
+  // }
 }
