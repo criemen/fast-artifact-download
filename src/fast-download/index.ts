@@ -20,7 +20,7 @@ async function streamExtract(
   )
   await cache.downloadCache(url, tmpPath, {
     useAzureSdk: true,
-    downloadConcurrency: 64
+    downloadConcurrency: 16
   })
   return createReadStream(tmpPath)
     .pipe(unzipper.Extract({path: directory}))
