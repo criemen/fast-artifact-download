@@ -6,15 +6,19 @@ import * as os from 'os'
 import * as path from 'path'
 import {createReadStream} from 'fs'
 import * as core from '@actions/core'
-import cacheHttpClient from '@actions/cache/lib/internal/cacheHttpClient'
+import downloadUtils from '@actions/cache/lib/internal/downloadUtils'
 import {requestLog} from '@octokit/plugin-request-log'
 import unzipper from 'unzipper'
-async function streamExtract(ripunzip: string, url: string, directory: string): Promise<void> {
+async function streamExtract(
+  ripunzip: string,
+  url: string,
+  directory: string
+): Promise<void> {
   const tmpPath = path.join(
     await fs.mkdtemp(path.join(os.tmpdir(), 'download-artifact-')),
     'artifact.zip'
   )
-  await cacheHttpClient.downloadCache(url, tmpPath, {
+  await downloadUtils.downloadCacheStorageSDK(url, tmpPath, {
     useAzureSdk: true
   })
   return createReadStream(tmpPath)
