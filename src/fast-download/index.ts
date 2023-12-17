@@ -25,7 +25,16 @@ async function streamExtract(
     connections: 128,
     maxRetry: 5,
     chunkSize: 8 * 1024 * 1024
-  }).wait()
+  })
+    .on('metadata', function (metadata) {
+      const jsonMetadata = JSON.stringify(metadata, null, 2)
+      core.info(`Metadata: ${jsonMetadata}`)
+    })
+    .on('progress', function (progress) {
+      const jsonProgress = JSON.stringify(progress, null, 2)
+      core.info(`Progress: ${jsonProgress}`)
+    })
+    .wait()
   // await exec.exec(azcopy, [
   //   'cp',
   //   url,
