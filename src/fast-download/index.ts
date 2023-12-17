@@ -19,7 +19,8 @@ async function streamExtract(
     'artifact.zip'
   )
   await cache.downloadCache(url, tmpPath, {
-    useAzureSdk: true
+    useAzureSdk: true,
+    downloadConcurrency: 64
   })
   return createReadStream(tmpPath)
     .pipe(unzipper.Extract({path: directory}))
