@@ -30,8 +30,8 @@ async function streamExtract(
       const jsonMetadata = JSON.stringify(metadata, null, 2)
       core.info(`Metadata: ${jsonMetadata}`)
     })
-    .on('progress', function (progress) {
-      const jsonProgress = JSON.stringify(progress, null, 2)
+    .on('progress', function ({details, total}) {
+      const jsonProgress = JSON.stringify(total, null, 2)
       core.info(`Progress: ${jsonProgress}`)
     })
     .wait()
