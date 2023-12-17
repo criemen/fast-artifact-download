@@ -4,6 +4,7 @@ import type {FindOptions} from '@actions/artifact'
 import * as github from '@actions/github'
 import * as exec from '@actions/exec'
 import * as core from '@actions/core'
+import * as io from '@actions/io'
 import {requestLog} from '@octokit/plugin-request-log'
 
 async function streamExtract(
@@ -14,11 +15,25 @@ async function streamExtract(
   if (!exists(ripunzip)) {
     throw new Error(`ripunzip does not exist: ${ripunzip}`)
   }
-  return exec
-    .exec(`"${ripunzip}"`, ['unzip-uri', '-d', directory, url], {
-      silent: true
-    })
-    .then(() => {})
+  core.info(`Downloading using aria2c: ${url}`)
+  const aria2c = await io.which('aria2c')
+  const startTime = new Date().getTime()
+  await exec.exec(aria2c, [
+    '-x16',
+    '-k8M',
+    '-o',
+    't.zip',
+    '--file-allocation=none',
+    url
+  ])
+  core.info(`aria2c download completed in ${new Date().getTime() - startTime}`)
+  const unzipStartTime = new Date().getTime()
+  core.debug(`Using ripunzip to extract artifact: ${ripunzip}`)
+  await exec.exec(ripunzip, ['unzip-file', '-d', directory, 't.zip'])
+  core.info(`Unzipping completed in ${new Date().getTime() - unzipStartTime}`)
+  core.info(
+    `Artifact download+unzip completed in ${new Date().getTime() - startTime}`
+  )
 }
 
 async function exists(path: string): Promise<boolean> {
