@@ -23,9 +23,9 @@ async function streamExtract(
 
   const startTime = new Date().getTime()
 
-  await downloadUtils.downloadCacheHttpClientConcurrent(url, '/tmp/t.zip', {
+  await downloadUtils.downloadCacheStorageSDK(url, '/tmp/t.zip', {
     useAzureSdk: false,
-    downloadConcurrency: 128,
+    downloadConcurrency: 32,
     concurrentBlobDownloads: true,
     timeoutInMs: 30000,
     segmentTimeoutInMs: 3600000,
