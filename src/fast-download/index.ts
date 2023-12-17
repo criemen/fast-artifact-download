@@ -4,6 +4,7 @@ import type {FindOptions} from '@actions/artifact'
 import * as github from '@actions/github'
 import * as exec from '@actions/exec'
 import * as core from '@actions/core'
+import * as downloadUtils from '@actions/cache/lib/internal/downloadUtils'
 import * as io from '@actions/io'
 import {requestLog} from '@octokit/plugin-request-log'
 import EasyDl from 'easydl'
@@ -21,20 +22,29 @@ async function streamExtract(
   // const azcopy = await io.which('azcopy')
 
   const startTime = new Date().getTime()
-  await new EasyDl(url, 't.zip', {
-    connections: 128,
-    maxRetry: 5,
-    chunkSize: 8 * 1024 * 1024
+
+  await downloadUtils.downloadCacheHttpClientConcurrent(url, '/tmp/t.zip', {
+    useAzureSdk: false,
+    downloadConcurrency: 128,
+    concurrentBlobDownloads: true,
+    timeoutInMs: 30000,
+    segmentTimeoutInMs: 3600000,
+    lookupOnly: false
   })
-    .on('metadata', function (metadata) {
-      const jsonMetadata = JSON.stringify(metadata, null, 2)
-      core.info(`Metadata: ${jsonMetadata}`)
-    })
-    .on('progress', function ({details, total}) {
-      const jsonProgress = JSON.stringify(total, null, 2)
-      core.info(`Progress: ${jsonProgress}`)
-    })
-    .wait()
+  // await new EasyDl(url, '/tmp/t.zip', {
+  //   connections: 128,
+  //   maxRetry: 5,
+  //   chunkSize: 8 * 1024 * 1024
+  // })
+  //   .on('metadata', function (metadata) {
+  //     const jsonMetadata = JSON.stringify(metadata, null, 2)
+  //     core.info(`Metadata: ${jsonMetadata}`)
+  //   })
+  //   .on('progress', function ({details, total}) {
+  //     const jsonProgress = JSON.stringify(total, null, 2)
+  //     core.info(`Progress: ${jsonProgress}`)
+  //   })
+  //   .wait()
   // await exec.exec(azcopy, [
   //   'cp',
   //   url,
@@ -56,7 +66,7 @@ async function streamExtract(
   core.info(`aria2c download completed in ${new Date().getTime() - startTime}`)
   const unzipStartTime = new Date().getTime()
   core.debug(`Using ripunzip to extract artifact: ${ripunzip}`)
-  await exec.exec(ripunzip, ['unzip-file', '-d', directory, 't.zip'])
+  await exec.exec(ripunzip, ['unzip-file', '-d', directory, '/tmp/t.zip'])
   core.info(`Unzipping completed in ${new Date().getTime() - unzipStartTime}`)
   core.info(
     `Artifact download+unzip completed in ${new Date().getTime() - startTime}`
