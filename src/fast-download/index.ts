@@ -6,6 +6,7 @@ import * as exec from '@actions/exec'
 import * as core from '@actions/core'
 import * as io from '@actions/io'
 import {requestLog} from '@octokit/plugin-request-log'
+import EasyDl from 'easydl'
 
 async function streamExtract(
   ripunzip: string,
@@ -17,18 +18,24 @@ async function streamExtract(
   }
   core.info(`Downloading using aria2c: ${url}`)
   // const aria2c = await io.which('aria2c')
-  const azcopy = await io.which('azcopy')
+  // const azcopy = await io.which('azcopy')
+
   const startTime = new Date().getTime()
-  await exec.exec(azcopy, [
-    'cp',
-    url,
-    't.zip',
-    '--blob-type',
-    'BlockBlob',
-    '--check-md5',
-    'NoCheck',
-    '--skip-version-check'
-  ])
+  await new EasyDl(url, 't.zip', {
+    connections: 128,
+    maxRetry: 5,
+    chunkSize: 8 * 1024 * 1024
+  }).wait()
+  // await exec.exec(azcopy, [
+  //   'cp',
+  //   url,
+  //   't.zip',
+  //   '--blob-type',
+  //   'BlockBlob',
+  //   '--check-md5',
+  //   'NoCheck',
+  //   '--skip-version-check'
+  // ])
   // await exec.exec(aria2c, [
   //   '-x16',
   //   '-k8M',
